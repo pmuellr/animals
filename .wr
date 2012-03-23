@@ -1,0 +1,18 @@
+# see: https://github.com/pmuellr/wr
+
+--stdoutcolor blue
+--stderrcolor red
+
+make
+
+animals-1.js
+animals-2.js
+animals-3.js
+
+animals-1.coffee
+animals-2.coffee
+animals-3.coffee
+
+animals-core.coffee
+
+Makefile
