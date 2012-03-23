@@ -15,23 +15,25 @@ function feedAnimal(animal) {
 }
 
 function feedHerbivore(herbivore) {
-  var grass = core.prepareGrass(herbivore);
-  var water = core.prepareWater(herbivore);
+  var grass = prepareGrass(herbivore);
+  var water = prepareWater(herbivore);
   herbivore.feed([grass, water]);
 }
 
 function feedCarnivore(carnivore) {
-  var meat = core.prepareMeat(carnivore);
-  var water = core.prepareWater(carnivore);
+  var meat = prepareMeat(carnivore);
+  var water = prepareWater(carnivore);
   carnivore.feed([meat, water]);
 }
 
 //------------------------------------------------------------------------------
 
-require('coffee-script')
+require('coffee-script');
 
-var core = require('./animals-core')
+var core = require('./animals-core');
 
-core.run(function(animals) {
-    feedAnimals(animals.slice(0,2))
-})
+var prepareGrass = core.prepareGrass;
+var prepareMeat  = core.prepareMeat;
+var prepareWater = core.prepareWater;
+
+core.run(feedAnimals);

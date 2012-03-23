@@ -6,18 +6,21 @@ feedAnimals = (animals) ->
 
   for animal in animals
     if animal.isHerbivore()
-      grass = core.prepareGrass animal
-      water = core.prepareWater animal
+      grass = prepareGrass animal
+      water = prepareWater animal
       animal.feed [grass, water]
     else if animal.isCarnivore()
-      meat = core.prepareMeat animal
-      water = core.prepareWater animal
+      meat = prepareMeat animal
+      water = prepareWater animal
       animal.feed [meat, water]
 
 #-------------------------------------------------------------------------------
 
 core = require './animals-core'
 
-core.run (animals) ->
-    feedAnimals animals.slice(0,2)
+prepareGrass = core.prepareGrass
+prepareMeat  = core.prepareMeat
+prepareWater = core.prepareWater
+
+core.run feedAnimals
 

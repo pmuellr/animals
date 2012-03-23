@@ -4,49 +4,54 @@ core = module.exports
 
 #-------------------------------------------------------------------------------
 core.run = (func) ->
-    begin()
     animals = getAnimals()
     func animals.slice(0,2) # only feed 1st two animals
-    end animals
+    test animals
 
 #-------------------------------------------------------------------------------
-begin = ->
-    program = path.basename process.argv[1]
-    console.log ""
-    console.log "-----------------------------------------------------"
-    console.log "running #{program}"
-    console.log "-----------------------------------------------------"
-
-#-------------------------------------------------------------------------------
-end = (animals) ->
+test = (animals) ->
     reports = []
     for animal in animals
-        animal.report(reports)
+        animal.report reports
         
-    fail "expecting 6 reports" if reports.length != 6
+    if reports.length != 6
+        allReports = reports.join "\n"
+        fail "expecting 6 reports, but got: \n#{allReports}" 
     
     expecteds = [
-        "lion is eating meat"
-        "lion is drinking water"
-        "cow is eating grass"
-        "cow is drinking water"
+        "lion will be eating meat"
+        "lion will be drinking water"
+        "cow will be eating grass"
+        "cow will be drinking water"
         "eagle was given nothing"
         "hen was given nothing"
     ]
     
     for i in [0..reports.length]
-        fail "wrong report for report #{i}" if expecteds[i] != reports[i]
+        if expecteds[i] != reports[i]
+            fail "expected '#{expecteds[i]}' but got '#{reports[i]}'"
         
     succeed()
 
 #-------------------------------------------------------------------------------
 fail = (message) ->
-    console.log "RESULT: FAIL: #{message}"
+    log "RESULT: FAIL: #{message}"
     process.exit()
 
 #-------------------------------------------------------------------------------
 succeed = ->
-    console.log "RESULT: SUCCEED"
+    log "RESULT: SUCCEED"
+
+#-------------------------------------------------------------------------------
+log = (string) ->
+    program = path.basename process.argv[1]
+    console.log "#{right(program,20)}: #{string}"
+
+#-------------------------------------------------------------------------------
+right = (string, length) ->
+    while string.length < length
+        string += " "
+    string
 
 #-------------------------------------------------------------------------------
 getAnimals = ->
@@ -64,6 +69,10 @@ core.prepareGrass = (animal) ->
 #-------------------------------------------------------------------------------
 core.prepareMeat = (animal) ->
     animal.prepareFood "meat"
+
+#-------------------------------------------------------------------------------
+core.prepareFood = (animal) ->
+    animal.prepareFood animal.getDefaultFood()
 
 #-------------------------------------------------------------------------------
 core.prepareWater = (animal) ->
@@ -84,30 +93,23 @@ class Animal
     #---------------------------------------------------------------------------
     report: (reports) ->
         if !@reports.length 
-            message = "#{@name} was given nothing"
-            reports.push message
-            console.log message
+            reports.push "#{@name} was given nothing"
             return
 
         for report in @reports
             reports.push report
-            console.log report
     
     #---------------------------------------------------------------------------
     prepareFood: (food) ->
-        "#{@name} is eating #{food}"
+        "#{@name} will be eating #{food}"
     
     #---------------------------------------------------------------------------
     prepareWater: ->
-        "#{@name} is drinking water"
+        "#{@name} will be drinking water"
 
     #---------------------------------------------------------------------------
-    getFood: ->
+    getDefaultFood: ->
         throw new Error "subclass responsibility"
-    
-    #---------------------------------------------------------------------------
-    getWater: ->
-        @prepareWater()
     
     #---------------------------------------------------------------------------
     isCarnivore: ->
@@ -130,8 +132,8 @@ class Carnivore extends Animal
         true
 
     #---------------------------------------------------------------------------
-    getFood: ->
-        @prepareFood "meat"
+    getDefaultFood: ->
+        "meat"
 
 #-------------------------------------------------------------------------------
 class Herbivore extends Animal 
@@ -145,6 +147,6 @@ class Herbivore extends Animal
         true
     
     #---------------------------------------------------------------------------
-    getFood: ->
-        @prepareFood "grass"
+    getDefaultFood: ->
+        "grass"
 

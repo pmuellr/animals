@@ -7,14 +7,16 @@ feedAnimals = (animals) ->
     feedAnimal animal
 
 feedAnimal = (animal) ->
-  food = animal.getFood()
-  water = animal.getWater()
+  food = prepareFood animal
+  water = prepareWater animal
   animal.feed [food, water]
 
 #-------------------------------------------------------------------------------
 
 core = require './animals-core'
 
-core.run (animals) ->
-    feedAnimals animals.slice(0,2)
+prepareFood  = core.prepareFood
+prepareWater = core.prepareWater
+
+core.run feedAnimals
 

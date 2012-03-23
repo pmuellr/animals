@@ -8,17 +8,18 @@ function feedAnimals(animals) {
 }
 
 function feedAnimal(animal) {
-  var food = animal.getFood();
-  var water = animal.getWater();
+  var food = prepareFood(animal);
+  var water = prepareWater(animal);
   animal.feed([food, water]);
 }
 
 //------------------------------------------------------------------------------
 
-require('coffee-script')
+require('coffee-script');
 
-var core = require('./animals-core')
+var core = require('./animals-core');
 
-core.run(function(animals) {
-    feedAnimals(animals.slice(0,2))
-})
+var prepareFood  = core.prepareFood;
+var prepareWater = core.prepareWater;
+
+core.run(feedAnimals);
